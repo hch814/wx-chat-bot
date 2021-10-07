@@ -1,4 +1,5 @@
 import logging
+import time
 
 import schedule
 import yaml
@@ -24,3 +25,4 @@ if __name__ == '__main__':
     schedule.every().day.at("07:15").do(report, bot)
     while True:
         schedule.run_pending()
+        time.sleep(1)
