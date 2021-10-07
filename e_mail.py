@@ -51,7 +51,7 @@ class EmailBot:
 
         # 登录并发送邮件
         try:
-            smtpObj = smtplib.SMTP_SSL(mail_host+':465')
+            smtpObj = smtplib.SMTP_SSL(mail_host)
             # 连接到服务器
             # smtpObj.connect(mail_host, 465)
             # 登录到服务器

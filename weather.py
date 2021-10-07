@@ -26,7 +26,7 @@ template = '''温度: {}
 class WeatherScraper:
     def query_weather_qq(self, province, city):
         try:
-            url = f'http://wis.qq.com/weather/common?source=pc&province={province}&city={city}&weather_type=forecast_24h|air|tips|index&_={int(round(time.time() * 1000))}'
+            url = f'https://wis.qq.com/weather/common?source=pc&province={province}&city={city}&weather_type=forecast_24h|air|tips|index&_={int(round(time.time() * 1000))}'
             resp = requests.get(url)
             data = json.loads(resp.text)['data']
             forecast = data['forecast_24h']['1']
