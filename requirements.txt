@@ -1,0 +1,5 @@
+beautifulsoup4==4.10.0
+itchat-uos==1.4.1
+lxml==4.5.2
+requests==2.25.1
+schedule==1.1.0
