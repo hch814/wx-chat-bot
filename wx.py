@@ -11,6 +11,7 @@ import time
 import itchat
 
 from config import APP_CONF
+from dao import MongoDao
 from e_mail import EmailBot
 from weather import WeatherScraper
 
@@ -29,6 +30,7 @@ class WechatBot:
         self.bot = itchat.new_instance()
         self.email = EmailBot()
         self.weather = WeatherScraper()
+        self.dao = MongoDao()
         self.login(True)
 
     def login(self, email):
@@ -44,8 +46,9 @@ class WechatBot:
         # print(self.bot.get_chatrooms())
 
         @self.bot.msg_register(itchat.content.TEXT)
-        def replay(msg):
-            print(msg)
+        def replay_echo(msg):
+            logging.info(msg)
+            self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
 
         self.bot.run(blockThread=False)

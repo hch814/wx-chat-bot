@@ -18,10 +18,10 @@ from bs4 import BeautifulSoup
 class WeatherScraper:
     # 温度 气象 空气 指数
     TEMPLATE = '''温度: {}
-    气象: {} 
-    空气指数: {}
-    {}
-    '''
+气象: {} 
+空气指数: {}
+{}
+'''
 
     def query_weather_qq(self, province, city):
         try:
