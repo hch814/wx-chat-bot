@@ -7,30 +7,28 @@
 """
 import logging
 import smtplib
-from configparser import ConfigParser
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from config import APP_CONF
+
 
 class EmailBot:
-    def __init__(self):
-        self.cp = ConfigParser()
 
     def send(self, qrcode):
-        self.cp.read('conf/email.conf', encoding='utf-8')
-        conf = self.cp['info']
+        conf = APP_CONF.email
         # 设置服务器所需信息
         # 163邮箱服务器地址
-        mail_host = conf['host']
+        mail_host = conf.host
         # 163用户名
-        mail_user = conf['user']
+        mail_user = conf.user
         # 密码(部分邮箱为授权码)
-        mail_pass = conf['password']
+        mail_pass = conf.password
         # 邮件发送方邮箱地址
-        sender = conf['sender']
+        sender = conf.sender
         # 邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
-        receivers = [conf['receiver']]
+        receivers = [conf.receiver]
 
         message = MIMEMultipart()
         # 设置email信息

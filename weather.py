@@ -14,15 +14,15 @@ from configparser import ConfigParser
 import requests
 from bs4 import BeautifulSoup
 
-# 温度 气象 空气 指数
-TEMPLATE = '''温度: {}
-气象: {} 
-空气指数: {}
-{}
-'''
-
 
 class WeatherScraper:
+    # 温度 气象 空气 指数
+    TEMPLATE = '''温度: {}
+    气象: {} 
+    空气指数: {}
+    {}
+    '''
+
     def query_weather_qq(self, province, city):
         try:
             url = f'https://wis.qq.com/weather/common?source=pc&province={province}&city={city}&weather_type=forecast_24h|air|tips|index&_={int(time.time() * 1000)}'
@@ -31,7 +31,7 @@ class WeatherScraper:
             forecast = data['forecast_24h']['1']
             air = data['air']
             index = data['index']
-            result = TEMPLATE.format(
+            result = WeatherScraper.TEMPLATE.format(
                 forecast['min_degree'] + '°C ~ ' + forecast['max_degree'] + '°C',  # 温度
 
                 forecast['day_weather'] + '转' + forecast['night_weather']  # 气象
@@ -96,7 +96,8 @@ class WeatherScraper:
             # print(aqi)
 
             # result = {"h0": temp_high, "l0": temp_low, "w0": weather}
-            result = TEMPLATE.format(temp_low + '°C ~ ' + temp_high + '°C', weather, self.query_air(city), None, None)
+            result = WeatherScraper.TEMPLATE.format(temp_low + '°C ~ ' + temp_high + '°C', weather,
+                                                    self.query_air(city), None, None)
         except Exception as e:
             logging.error(f"failed to query weather: {e}")
         return result

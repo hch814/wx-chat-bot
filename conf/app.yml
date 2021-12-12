@@ -1,6 +1,6 @@
 logging:
-  format: "%(asctime)s [%(levelname)s] - %(message)s"
-  level: INFO
+  format: "%(asctime)s [%(levelname)s] %(process)d %(filename)s(line:%(lineno)d) : %(message)s"
+  level: DEBUG
   file: app.log
 
 wx:
