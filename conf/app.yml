@@ -5,3 +5,6 @@ logging:
 
 wx:
   user: 'HCH'
+
+days:
+  begin: 2021-10-03

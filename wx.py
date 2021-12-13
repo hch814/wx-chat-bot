@@ -12,7 +12,9 @@ import itchat
 
 from config import APP_CONF
 from dao import MongoDao
+from day import DaysReminder
 from e_mail import EmailBot
+from sentence import DailySentenceScraper
 from weather import WeatherScraper
 
 
@@ -22,6 +24,12 @@ class WechatBot:
 今天也要是元气满满的一天哦
 
 ✨天气情况：
+{}
+
+💬每日一句：
+{}
+
+📅日子：
 {}
 '''
     _store = 'bot.pkl'
@@ -60,7 +68,9 @@ class WechatBot:
             # self.bot.search_friends(remarkName=user)[0].send(template.format(self.counter))
             self.bot.search_friends(nickName=user)[0].send(
                 WechatBot.MSG_TEMPLATE.format(time.strftime("%Y-%m-%d %A", time.localtime()),
-                                              self.weather.query_weather_qq('上海市', '上海市'))
+                                              self.weather.query_weather_qq('上海市', '上海市'),
+                                              DailySentenceScraper.daily_sentence(),
+                                              DaysReminder.remind(), )
             )
         except IndexError:
             logging.error(f"no such user: {user}")
