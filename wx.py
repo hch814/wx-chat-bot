@@ -42,12 +42,14 @@ class WechatBot:
         self.login(True)
 
     def login(self, email):
+        self.auto_replay()
+
         if email:
             self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login,
                                 qrCallback=self._on_qr, exitCallback=self._on_exit)
         else:
             self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login, )
-        self.auto_replay()
+        self.bot.run(blockThread=False)
 
     def auto_replay(self):
         # print(self.bot.get_friends())
@@ -60,8 +62,6 @@ class WechatBot:
             logging.info(msg)
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
-
-        self.bot.run(blockThread=False)
 
     def report(self, user):
         try:
