@@ -20,8 +20,7 @@ class WeatherScraper:
     TEMPLATE = '''温度: {}
 气象: {} 
 空气指数: {}
-{}
-'''
+{}'''
 
     def query_weather_qq(self, province, city):
         try:
@@ -129,6 +128,6 @@ class WeatherScraper:
 
 if __name__ == '__main__':
     w = WeatherScraper()
-    print(w.query_indices('上海'))
+    print(w.query_weather_qq('上海市', '上海市'))
+    print('a')
     # w.query_air('北京')
-    # w.query_weather_qq('上海市', '上海市')

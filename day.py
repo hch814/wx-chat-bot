@@ -15,7 +15,7 @@ from config import APP_CONF
 
 class DaysReminder:
     TEMPLATE = """{}
-[爱心]今天是你们在一起的第{}天[爱心]
+[爱心]今天是你们在一起的第{}天
 """
 
     @staticmethod
