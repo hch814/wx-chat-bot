@@ -66,8 +66,9 @@ class WechatBot:
     def report(self, user):
         try:
             if not self.bot.alive:
-                self.login(True)
-            # self.bot.search_friends(remarkName=user)[0].send(template.format(self.counter))
+                # self.login(True)
+                logging.warning('wx-chat-bot not alive!')
+                return
             self.bot.search_friends(nickName=user)[0].send(
                 WechatBot.MSG_TEMPLATE.format(time.strftime("%Y-%m-%d %A", time.localtime()),
                                               self.weather.query_weather_qq('上海市', '上海市'),
