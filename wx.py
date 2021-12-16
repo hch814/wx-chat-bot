@@ -55,6 +55,8 @@ class WechatBot:
 
         @self.bot.msg_register(itchat.content.TEXT)
         def replay_echo(msg):
+            if msg.text == '早安':
+                return self.report(msg.user.nickName)
             logging.info(msg)
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
