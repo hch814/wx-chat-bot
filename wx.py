@@ -36,20 +36,17 @@ class WechatBot:
 
     def __init__(self):
         self.bot = itchat.new_instance()
-        self.email = EmailBot()
         self.weather = WeatherScraper()
         self.dao = MongoDao()
         self.login(True)
 
     def login(self, email):
-        self.auto_replay()
-
         if email:
             self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login,
                                 qrCallback=self._on_qr, exitCallback=self._on_exit)
         else:
             self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login, )
-        self.bot.run(blockThread=False)
+        self.auto_replay()
 
     def auto_replay(self):
         # print(self.bot.get_friends())
@@ -62,6 +59,8 @@ class WechatBot:
             logging.info(msg)
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
+
+        self.bot.run(blockThread=False)
 
     def report(self, user):
         try:
@@ -89,13 +88,14 @@ class WechatBot:
             logging.error(e)
 
     def _on_login(self):
-        logging.info(f'wechat login successfully')
+        logging.info('wx-chat-bot login successfully')
         self.bot.search_friends(nickName=APP_CONF.wx.user)[0].send('【提示】wx-chat-bot已登录')
 
     def _on_exit(self):
-        logging.warning(f'wechat exit...')
+        logging.warning('wx-chat-bot exit...')
+        EmailBot.send_msg('wx-chat-bot exit...')
 
     def _on_qr(self, uuid, status, qrcode):
         # logging.info(f'qr: {status} {uuid} {qrcode}')
         if status == '0':
-            self.email.send(qrcode)
+            EmailBot.send_qr(qrcode)
