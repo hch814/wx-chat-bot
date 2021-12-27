@@ -49,7 +49,7 @@ class WechatBot:
         self.auto_replay()
 
     def auto_replay(self):
-        # print(self.bot.get_friends())
+        logging.info(self.bot.get_friends())
         # print(self.bot.get_chatrooms())
 
         @self.bot.msg_register(itchat.content.TEXT)
