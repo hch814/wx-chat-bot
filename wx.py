@@ -46,7 +46,7 @@ class WechatBot:
                                 qrCallback=self._on_qr, exitCallback=self._on_exit)
         else:
             self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login, )
-        # self.auto_replay()
+        self.auto_replay()
 
     def auto_replay(self):
         # print(self.bot.get_friends())
