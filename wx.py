@@ -56,6 +56,8 @@ class WechatBot:
         def replay_echo(msg):
             if msg.text == '早安':
                 return self.report(msg.user.nickName)
+            if msg.text.startswith('test'):
+                return self.send(msg.text.split()[1], msg.text.split()[2])
             logging.info(msg)
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
@@ -64,7 +66,10 @@ class WechatBot:
 
     def send(self, user, msg):
         try:
-            self.bot.search_friends(nickName=user)[0].send(msg)
+            user_list = self.bot.search_friends(nickName=user)
+            if not user_list:
+                user_list = self.bot.search_friends(userName=user)
+            user_list[0].send(msg)
         except IndexError:
             logging.error(f"no such user: {user}")
         except Exception as e:
