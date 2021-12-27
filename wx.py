@@ -49,7 +49,7 @@ class WechatBot:
         self.auto_replay()
 
     def auto_replay(self):
-        logging.info(self.bot.get_friends())
+        # logging.info(self.bot.get_friends())
         # print(self.bot.get_chatrooms())
 
         @self.bot.msg_register(itchat.content.TEXT)
@@ -74,6 +74,9 @@ class WechatBot:
             logging.error(f"no such user: {user}")
         except Exception as e:
             logging.error(e)
+
+    def heartbeat(self):
+        self.bot.send('【heartbeat】wx-chat-bot alive', toUserName='filehelper')
 
     def report(self, user):
         try:

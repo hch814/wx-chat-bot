@@ -15,7 +15,7 @@ def main():
 
     logging.info('start job...')
     # schedule.every().minute.at(':00').do(bot.report, APP_CONF.wx.user)
-    schedule.every().hour.at(':10').do(bot.send, 'filehelper', '【heartbeat】wx-chat-bot alive')
+    schedule.every().hour.at(':10').do(bot.heartbeat)
     schedule.every().day.at("07:15").do(bot.report, APP_CONF.wx.user)
     while True:
         schedule.run_pending()
