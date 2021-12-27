@@ -62,6 +62,14 @@ class WechatBot:
 
         self.bot.run(blockThread=False)
 
+    def send(self, user, msg):
+        try:
+            self.bot.search_friends(nickName=user)[0].send(msg)
+        except IndexError:
+            logging.error(f"no such user: {user}")
+        except Exception as e:
+            logging.error(e)
+
     def report(self, user):
         try:
             if not self.bot.alive:
