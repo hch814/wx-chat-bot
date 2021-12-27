@@ -47,6 +47,7 @@ class WechatBot:
         else:
             self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login, )
         self.auto_replay()
+        self.heartbeat()
 
     def auto_replay(self):
         # logging.info(self.bot.get_friends())
