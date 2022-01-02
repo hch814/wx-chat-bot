@@ -6,9 +6,11 @@
 @date  : 2021/10/5
 """
 import logging
+import random
 import time
 
 import itchat
+import requests
 
 from config import APP_CONF
 from dao import MongoDao
@@ -33,6 +35,10 @@ class WechatBot:
 {}
 '''
     _store = 'bot.pkl'
+    api_url = 'http://www.tuling123.com/openapi/api'
+    api_key = ['8edce3ce905a4c1dbb965e6b35c3834d',
+               'eb720a8970964f3f855d863d24406576',
+               '1107d5601866433dba9599fac1bc0083']
 
     def __init__(self):
         self.bot = itchat.new_instance()
@@ -57,11 +63,19 @@ class WechatBot:
         def replay_echo(msg):
             if msg.text == '早安':
                 return self.report(msg.user.nickName)
-            if msg.text.startswith('test'):
-                return self.send(msg.text.split()[1], msg.text.split()[2])
+            if msg.text.startswith('echo '):
+                return self.send(msg.text[5:])
             logging.info(msg)
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
+
+        @self.bot.msg_register(itchat.content.TEXT, isGroupChat=True)
+        def group_replay(msg):
+            if msg.isAt:
+                if msg.text.startswith('echo '):
+                    msg.user.send(u'@%s\u2005I received: %s' % (msg.actualNickName, msg.text[5:]))
+                else:
+                    msg.user.send(self.replay(msg.text))
 
         self.bot.run(blockThread=False)
 
@@ -103,6 +117,19 @@ class WechatBot:
             logging.error(f"no such group: {group_name}")
         except Exception as e:
             logging.error(e)
+
+    def replay(self, msg):
+        key = random.choice(WechatBot.api_key)
+        data = {
+            'key': key,  # 如果这个Tuling Key不能用，那就换一个
+            'info': msg,  # 这是我们发出去的消息
+            'userid': 'wechat-robot',  # 这里你想改什么都可以
+        }
+        r = requests.post(WechatBot.api_url, data=data).json()
+        if r['code'] == 40004 and len(WechatBot.api_key) > 1:
+            WechatBot.api_key.remove(key)
+            return self.replay(msg)
+        return r['text']
 
     def _on_login(self):
         logging.info('wx-chat-bot login successfully')
