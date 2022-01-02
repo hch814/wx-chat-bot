@@ -74,6 +74,13 @@ class WechatBot:
             if msg.isAt:
                 if msg.text.startswith('echo '):
                     msg.user.send(u'@%s\u2005I received: %s' % (msg.actualNickName, msg.text[5:]))
+                elif msg.text == '早安':
+                    msg.user.send(
+                        WechatBot.MSG_TEMPLATE.format(time.strftime("%Y-%m-%d %A", time.localtime()),
+                                                      self.weather.query_weather_qq('上海市', '上海市'),
+                                                      DailySentenceScraper.daily_sentence(),
+                                                      DaysReminder.remind(), )
+                    )
                 else:
                     msg.user.send(self.replay(msg.text))
 
@@ -112,7 +119,16 @@ class WechatBot:
 
     def report_group(self, group_name):
         try:
-            self.bot.search_chatrooms(name=group_name)[0].send('🤖测试{}[旺柴]'.format(1))
+            if not self.bot.alive:
+                # self.login(True)
+                logging.warning('wx-chat-bot not alive!')
+                return
+            self.bot.search_chatrooms(name=group_name)[0].send(
+                WechatBot.MSG_TEMPLATE.format(time.strftime("%Y-%m-%d %A", time.localtime()),
+                                              self.weather.query_weather_qq('上海市', '上海市'),
+                                              DailySentenceScraper.daily_sentence(),
+                                              DaysReminder.remind(), )
+            )
         except IndexError:
             logging.error(f"no such group: {group_name}")
         except Exception as e:
