@@ -61,15 +61,15 @@ class WechatBot:
 
         @self.bot.msg_register(TEXT)
         def replay_echo(msg):
-            if msg.text == '早安':
-                return self.report(msg.user.nickName)
+            # if msg.text == '早安':
+            #     return self.report(msg.user.nickName)
             if msg.text.startswith('echo '):
-                logging.info(f'receive msg: {msg.text}')
+                logging.info(f'receive msg: {msg}')
                 msg.user.send(msg.text[5:])
-                return
-            logging.info(msg)
-            self.dao.log_msg(msg)
-            return msg.user.nickName + ":" + msg.text
+                return "return"
+            # logging.info(msg)
+            # self.dao.log_msg(msg)
+            # return msg.user.nickName + ":" + msg.text
 
         @self.bot.msg_register(TEXT, isGroupChat=True)
         def group_replay(msg):
