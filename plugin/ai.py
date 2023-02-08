@@ -1,27 +1,30 @@
 
 import random
 import requests
+from conf.config import APP_CONF
 
 
 class AiPlugin:
-    api_url = 'http://www.tuling123.com/openapi/api'
-    api_key = ['8edce3ce905a4c1dbb965e6b35c3834d',
-               'eb720a8970964f3f855d863d24406576',
-               '1107d5601866433dba9599fac1bc0083']
+    sign_url = f'https://openai.weixin.qq.com/openapi/sign/{APP_CONF.wxai.token}'
+    ai_url = f'https://openai.weixin.qq.com/openapi/aibot/{APP_CONF.wxai.token}'
 
-    def ai_replay(self, msg):
-        key = random.choice(AiPlugin.api_key)
+    def get_sig(self):
         data = {
-            'key': key,  # 如果这个Tuling Key不能用，那就换一个
-            'info': msg,  # 这是我们发出去的消息
-            'userid': 'wechat-robot',  # 这里你想改什么都可以
+            "userid": APP_CONF.wxai.userid
         }
-        r = requests.post(AiPlugin.api_url, data=data)
-        print(r.content)
-        # if r['code'] == 40004 and len(AiPlugin.api_key) > 1:
-        #     AiPlugin.api_key.remove(key)
-        #     return self.ai_replay(msg)
-        # return r['text']
+        sig_r = requests.post(AiPlugin.sign_url, data=data).json()
+        return sig_r['signature']
+
+    def ai_replay(self, query):
+        ai_payload = {
+            "signature": self.get_sig(),
+            "query": query
+        }
+        query_r = requests.post(AiPlugin.ai_url, data=ai_payload).json()
+        # print(query_r)
+        return query_r['answer'] if query_r['answer'] else '不太明白你的问题呢~'
+             
+
 
 if __name__ == '__main__':
     ai = AiPlugin()

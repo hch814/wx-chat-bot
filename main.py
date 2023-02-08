@@ -5,6 +5,7 @@ import schedule
 
 from conf.config import APP_CONF
 from core.bot import WechatBot
+from plugin.ai import AiPlugin
 
 
 def main():
@@ -16,7 +17,7 @@ def main():
     logging.info('start job...')
     # schedule.every().minute.at(':00').do(bot.report, APP_CONF.wx.user)
     schedule.every().hour.at(':10').do(bot.heartbeat)
-    schedule.every().day.at("07:15").do(bot.report, APP_CONF.wx.user)
+    schedule.every().day.at("07:15").do(bot.morning_greeting, 'bot测试')
     while True:
         schedule.run_pending()
         time.sleep(1)

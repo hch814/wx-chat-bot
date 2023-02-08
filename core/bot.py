@@ -14,6 +14,7 @@ import requests
 
 from conf.config import APP_CONF
 from core.dao import MongoDao
+from plugin.ai import AiPlugin
 from plugin.day import DaysReminder
 from core.email import EmailBot
 from plugin.sentence import DailySentenceScraper
@@ -44,14 +45,15 @@ class WechatBot:
         self.bot = itchat.load_sync_itchat()
         self.weather = WeatherScraper()
         self.dao = MongoDao()
-        self.login(True)
+        self.ai = AiPlugin()
+        self.login(False)
 
     def login(self, email):
         if email:
             self.bot.auto_login(hotReload=True, enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login,
                                 qrCallback=self._on_qr, exitCallback=self._on_exit)
         else:
-            self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login)
+            self.bot.auto_login(hotReload=True, enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login)
         self.auto_replay()
         self.heartbeat()
 
@@ -61,12 +63,13 @@ class WechatBot:
 
         @self.bot.msg_register(TEXT)
         def replay_echo(msg):
-            # if msg.text == '早安':
-            #     return self.report(msg.user.nickName)
+            logging.info(f'receive msg: {msg}')
+            if msg.text == '早安':
+                return self.report(msg.user.nickName)
             if msg.text.startswith('echo '):
-                logging.info(f'receive msg: {msg}')
                 msg.user.send(msg.text[5:])
-                return "return"
+                return msg.text[5:]
+            return self.send('HCH', self.ai.ai_replay(msg.text))
             # logging.info(msg)
             # self.dao.log_msg(msg)
             # return msg.user.nickName + ":" + msg.text
@@ -84,7 +87,7 @@ class WechatBot:
                                                       DaysReminder.remind(), )
                     )
                 else:
-                    msg.user.send(self.ai_replay(msg.text))
+                    msg.user.send(self.ai.ai_replay(msg.text))
 
         self.bot.run(blockThread=False)
 
@@ -119,7 +122,7 @@ class WechatBot:
         except Exception as e:
             logging.error(e)
 
-    def report_group(self, group_name):
+    def morning_greeting(self, group_name):
         try:
             if not self.bot.alive:
                 # self.login(True)
@@ -135,19 +138,6 @@ class WechatBot:
             logging.error(f"no such group: {group_name}")
         except Exception as e:
             logging.error(e)
-
-    def ai_replay(self, msg):
-        key = random.choice(WechatBot.api_key)
-        data = {
-            'key': key,  # 如果这个Tuling Key不能用，那就换一个
-            'info': msg,  # 这是我们发出去的消息
-            'userid': 'wechat-robot',  # 这里你想改什么都可以
-        }
-        r = requests.post(WechatBot.api_url, data=data).json()
-        if r['code'] == 40004 and len(WechatBot.api_key) > 1:
-            WechatBot.api_key.remove(key)
-            return self.ai_replay(msg)
-        return r['text']
 
     def _on_login(self):
         logging.info('wx-chat-bot login successfully')
