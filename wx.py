@@ -41,10 +41,10 @@ class WechatBot:
                '1107d5601866433dba9599fac1bc0083']
 
     def __init__(self):
-        self.bot = itchat.new_instance()
+        self.bot = itchat.load_sync_itchat()
         self.weather = WeatherScraper()
         self.dao = MongoDao()
-        self.login(True)
+        self.login(False)
 
     def login(self, email):
         if email:
@@ -59,7 +59,7 @@ class WechatBot:
         # logging.info(self.bot.get_friends())
         # print(self.bot.get_chatrooms())
 
-        @self.bot.msg_register(itchat.content.TEXT)
+        @self.bot.msg_register('TEXT')
         def replay_echo(msg):
             if msg.text == '早安':
                 return self.report(msg.user.nickName)
@@ -69,7 +69,7 @@ class WechatBot:
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
 
-        @self.bot.msg_register(itchat.content.TEXT, isGroupChat=True)
+        @self.bot.msg_register('TEXT', isGroupChat=True)
         def group_replay(msg):
             if msg.isAt:
                 if msg.text.startswith('echo '):
