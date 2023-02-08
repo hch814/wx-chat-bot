@@ -132,3 +132,4 @@ dmypy.json
 conf/email.conf
 conf/credentials.conf
 QR.png
+*.pkl
