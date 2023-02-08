@@ -7,7 +7,7 @@ data access
 """
 from pymongo import MongoClient
 
-from config import APP_CONF
+from conf.config import APP_CONF
 
 
 class MongoDao:

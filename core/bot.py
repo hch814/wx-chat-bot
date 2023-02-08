@@ -12,13 +12,13 @@ import time
 import itchat
 import requests
 
-from config import APP_CONF
-from dao import MongoDao
-from day import DaysReminder
-from e_mail import EmailBot
-from sentence import DailySentenceScraper
-from weather import WeatherScraper
-
+from conf.config import APP_CONF
+from core.dao import MongoDao
+from plugin.day import DaysReminder
+from core.email import EmailBot
+from plugin.sentence import DailySentenceScraper
+from plugin.weather import WeatherScraper
+from itchat.content import *
 
 class WechatBot:
     MSG_TEMPLATE = '''今天是{}
@@ -44,14 +44,14 @@ class WechatBot:
         self.bot = itchat.load_sync_itchat()
         self.weather = WeatherScraper()
         self.dao = MongoDao()
-        self.login(False)
+        self.login(True)
 
     def login(self, email):
         if email:
             self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login,
                                 qrCallback=self._on_qr, exitCallback=self._on_exit)
         else:
-            self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login, )
+            self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login)
         self.auto_replay()
         self.heartbeat()
 
@@ -59,17 +59,17 @@ class WechatBot:
         # logging.info(self.bot.get_friends())
         # print(self.bot.get_chatrooms())
 
-        @self.bot.msg_register('Text')
+        @self.bot.msg_register(TEXT)
         def replay_echo(msg):
             if msg.text == '早安':
                 return self.report(msg.user.nickName)
             if msg.text.startswith('echo '):
-                return self.send(msg.text[5:])
+                return self.send('HCH', msg.text[5:])
             logging.info(msg)
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
 
-        @self.bot.msg_register('Text', isGroupChat=True)
+        @self.bot.msg_register(TEXT, isGroupChat=True)
         def group_replay(msg):
             if msg.isAt:
                 if msg.text.startswith('echo '):
@@ -82,7 +82,7 @@ class WechatBot:
                                                       DaysReminder.remind(), )
                     )
                 else:
-                    msg.user.send(self.replay(msg.text))
+                    msg.user.send(self.ai_replay(msg.text))
 
         self.bot.run(blockThread=False)
 
@@ -134,7 +134,7 @@ class WechatBot:
         except Exception as e:
             logging.error(e)
 
-    def replay(self, msg):
+    def ai_replay(self, msg):
         key = random.choice(WechatBot.api_key)
         data = {
             'key': key,  # 如果这个Tuling Key不能用，那就换一个
@@ -144,7 +144,7 @@ class WechatBot:
         r = requests.post(WechatBot.api_url, data=data).json()
         if r['code'] == 40004 and len(WechatBot.api_key) > 1:
             WechatBot.api_key.remove(key)
-            return self.replay(msg)
+            return self.ai_replay(msg)
         return r['text']
 
     def _on_login(self):

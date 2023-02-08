@@ -68,8 +68,8 @@ Conf.from_file_conf('conf/city.conf')
 APP_CONF = Conf.app_conf
 
 if __name__ == '__main__':
-    Conf.from_file_yml('conf/app.yml')
-    Conf.from_file_conf('conf/city.conf')
+    Conf.from_file_yml('app.yml')
+    Conf.from_file_conf('city.conf')
     print(Conf.app_conf.wx.user)
     import time
 

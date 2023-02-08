@@ -10,7 +10,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from config import APP_CONF
+from conf.config import APP_CONF
 
 
 class DaysReminder:

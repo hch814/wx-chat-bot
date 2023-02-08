@@ -3,8 +3,8 @@ import time
 
 import schedule
 
-from config import APP_CONF
-from wx import WechatBot
+from conf.config import APP_CONF
+from core.bot import WechatBot
 
 
 def main():

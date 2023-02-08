@@ -11,7 +11,7 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from config import APP_CONF
+from conf.config import APP_CONF
 
 
 class EmailBot:
