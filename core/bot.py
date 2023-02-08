@@ -46,7 +46,7 @@ class WechatBot:
         self.weather = WeatherScraper()
         self.dao = MongoDao()
         self.ai = AiPlugin()
-        self.login(False)
+        self.login(True)
 
     def login(self, email):
         if email:
