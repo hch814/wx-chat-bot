@@ -48,7 +48,7 @@ class WechatBot:
 
     def login(self, email):
         if email:
-            self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login,
+            self.bot.auto_login(hotReload=True, enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login,
                                 qrCallback=self._on_qr, exitCallback=self._on_exit)
         else:
             self.bot.auto_login(enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login)
@@ -64,7 +64,7 @@ class WechatBot:
             if msg.text == '早安':
                 return self.report(msg.user.nickName)
             if msg.text.startswith('echo '):
-                return self.send('HCH', msg.text[5:])
+                return msg.text[5:]
             logging.info(msg)
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
