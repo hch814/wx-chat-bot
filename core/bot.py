@@ -64,7 +64,9 @@ class WechatBot:
             if msg.text == '早安':
                 return self.report(msg.user.nickName)
             if msg.text.startswith('echo '):
-                return msg.text[5:]
+                logging.info(f'receive msg: {msg.text}')
+                msg.user.send(msg.text[5:])
+                return
             logging.info(msg)
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
