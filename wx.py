@@ -59,7 +59,7 @@ class WechatBot:
         # logging.info(self.bot.get_friends())
         # print(self.bot.get_chatrooms())
 
-        @self.bot.msg_register('TEXT')
+        @self.bot.msg_register('Text')
         def replay_echo(msg):
             if msg.text == '早安':
                 return self.report(msg.user.nickName)
@@ -69,7 +69,7 @@ class WechatBot:
             self.dao.log_msg(msg)
             return msg.user.nickName + ":" + msg.text
 
-        @self.bot.msg_register('TEXT', isGroupChat=True)
+        @self.bot.msg_register('Text', isGroupChat=True)
         def group_replay(msg):
             if msg.isAt:
                 if msg.text.startswith('echo '):
