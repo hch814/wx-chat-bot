@@ -6,6 +6,7 @@ data access
 @date  : 2021/12/8
 """
 from pymongo import MongoClient
+import redis
 
 from conf.config import APP_CONF
 
@@ -24,6 +25,11 @@ class MongoDao:
             'to_user_name': msg.toUserName,
             'create_time': msg.createTime,
         })
+
+
+class RedisDao:
+    pool = redis.ConnectionPool(decode_responses=True)
+    r = redis.Redis(connection_pool=pool, decode_responses=True)
 
 
 if __name__ == '__main__':

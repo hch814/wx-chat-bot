@@ -5,6 +5,7 @@ logging:
 
 wx:
   user: 'HCH'
+  group: '雯雯专属服务群'
 
 days:
   begin: 2021-10-03

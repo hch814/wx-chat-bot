@@ -6,7 +6,6 @@
 @date  : 2021/10/5
 """
 import logging
-import random
 import time
 
 import itchat
@@ -36,10 +35,6 @@ class WechatBot:
 {}
 '''
     _store = 'bot.pkl'
-    api_url = 'http://www.tuling123.com/openapi/api'
-    api_key = ['8edce3ce905a4c1dbb965e6b35c3834d',
-               'eb720a8970964f3f855d863d24406576',
-               '1107d5601866433dba9599fac1bc0083']
 
     def __init__(self):
         self.bot = itchat.load_sync_itchat()
