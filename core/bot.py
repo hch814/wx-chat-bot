@@ -82,7 +82,7 @@ class WechatBot:
                                                       DaysReminder.remind(), )
                     )
                 else:
-                    msg.user.send(self.ai.ai_replay(msg.text))
+                    msg.user.send(self.ai.ai_replay(msg.text[msg.text.find('\u2005') + 1:]))
 
         self.bot.run(blockThread=False)
 
