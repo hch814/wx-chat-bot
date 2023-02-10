@@ -6,6 +6,7 @@
 @date  : 2021/10/5
 """
 import logging
+import re
 import time
 
 import itchat
@@ -84,9 +85,7 @@ class WechatBot:
                                                       DaysReminder.remind(), )
                     )
                 else:
-                    logging.info(msg.text.find('\u2005'))
-                    logging.info(msg.text[msg.text.find('\u2005') + 1:])
-                    msg.user.send(self.ai.ai_replay(msg.text[msg.text.find('\u2005') + 1:]))
+                    msg.user.send(self.ai.ai_replay(re.match(r'(@\S*\s)(.*)', msg.text).group(2)))
 
         self.bot.run(blockThread=False)
 
