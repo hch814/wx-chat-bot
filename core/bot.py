@@ -9,16 +9,16 @@ import logging
 import time
 
 import itchat
-import requests
+from itchat.content import *
 
 from conf.config import APP_CONF
 from core.dao import MongoDao
+from core.email import EmailBot
 from plugin.ai import AiPlugin
 from plugin.day import DaysReminder
-from core.email import EmailBot
 from plugin.sentence import DailySentenceScraper
 from plugin.weather import WeatherScraper
-from itchat.content import *
+
 
 class WechatBot:
     MSG_TEMPLATE = '''今天是{}
@@ -45,10 +45,12 @@ class WechatBot:
 
     def login(self, email):
         if email:
-            self.bot.auto_login(hotReload=True, enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login,
+            self.bot.auto_login(hotReload=True, enableCmdQR=2, statusStorageDir=WechatBot._store,
+                                loginCallback=self._on_login,
                                 qrCallback=self._on_qr, exitCallback=self._on_exit)
         else:
-            self.bot.auto_login(hotReload=True, enableCmdQR=2, statusStorageDir=WechatBot._store, loginCallback=self._on_login)
+            self.bot.auto_login(hotReload=True, enableCmdQR=2, statusStorageDir=WechatBot._store,
+                                loginCallback=self._on_login)
         self.auto_replay()
         self.heartbeat()
 
@@ -82,6 +84,7 @@ class WechatBot:
                                                       DaysReminder.remind(), )
                     )
                 else:
+                    logging.info(msg.text.find('\u2005'))
                     logging.info(msg.text[msg.text.find('\u2005') + 1:])
                     msg.user.send(self.ai.ai_replay(msg.text[msg.text.find('\u2005') + 1:]))
 
